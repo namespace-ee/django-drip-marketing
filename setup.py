@@ -51,7 +51,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Madis Väin',
     author_email='madis@namespace.ee',
-    url='https://github.com/namespace-ou/django-drip-marketing',
+    url='https://github.com/namespace-ee/django-drip-marketing',
     packages=[
         'drip_marketing',
     ],
