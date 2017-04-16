@@ -53,9 +53,13 @@ class Drip(BaseModel):
         }))
 
     def html(self, user):
-        return Template(self.html_template).render(Context({
+        html_body = Template(self.html_template).render(Context({
             'user': user
         }))
+        if getattr(settings, 'DRIP_PREMAILER', False):
+            from premailer import transform
+            html_body = transform(html_body)
+        return html_body
 
     def run(self, now=timezone.now()):
         if not self.from_email:
