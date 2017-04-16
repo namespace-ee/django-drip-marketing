@@ -1,0 +1,36 @@
+{% extends 'admin/base_site.html' %}
+
+{% load i18n %}
+
+{% block title %}Drip Timeline for {{ drip.name }}{% endblock title %}
+
+{% block content %}
+  <h1>{{ drip.name }} Drip Schedule:</h1>
+
+  <div class="content-main">
+    {% for group, drips in grouped_drips.items %}
+      <div class="module">
+        <table>
+          <caption>
+            <a href="#" class="section" title="{{ pack.drip.now }}">
+              {{ group }}
+            </a>
+          </caption>
+          
+          {% for drip in drips %}
+            <tr>
+              <td>{{ user.email|default:user.id }}</td>
+              <td>
+                <a href="{% url 'admin:drip_email' drip.id user.id %}">
+                  {% trans 'View email' %}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% empty %}
+      <i>No scheduled emails</i>
+    {% endfor %}
+  </div>
+{% endblock content %}

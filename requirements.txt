@@ -1,0 +1,2 @@
+django>=1.8
+dateparser==0.6.0
