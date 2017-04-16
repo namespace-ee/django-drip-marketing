@@ -88,7 +88,7 @@ class Drip(BaseModel):
             'exclude': []
         }
 
-        for rule in self.queryset_rules.all():
+        for rule in self.drip_rules.all():
             clause = clauses.get(rule.method_type, clauses['filter'])
 
             kwargs = rule.filter_kwargs(qs, now=now)
@@ -103,37 +103,7 @@ class Drip(BaseModel):
         return qs
 
 
-class SentDrip(BaseModel):
-    STATE_QUEUED = 'queued'
-    STATE_SENT = 'sent'
-    STATES = (
-        (STATE_QUEUED, 'Queued'),
-        (STATE_SENT, 'Sent'),
-    )
-    drip = models.ForeignKey('drip_marketing.Drip', related_name='sent_drips')
-    user = models.ForeignKey(get_user_model(), related_name='sent_drips')
-    from_email = models.EmailField()
-    sender_name = models.CharField(max_length=100)
-    subject = models.TextField()
-    text_body = models.TextField()
-    html_body = models.TextField()
-    state = models.CharField(max_length=20, choices=STATES, default='queued')
-
-    def __str__(self):
-        return '{} - {}'.format(self.drip.name, self.user.email)
-
-    def send(self):
-        message = EmailMultiAlternatives(
-            subject=self.subject,
-            from_email=self.from_email,
-            to=[self.user.email],
-            body=self.text_body
-        )
-        message.attach_alternative(self.html_body, 'text/html')
-        return message.send(fail_silently=False)
-
-
-class QuerySetRule(BaseModel):
+class DripRule(BaseModel):
     METHOD_TYPES = (
         ('filter', 'Filter'),
         ('exclude', 'Exclude'),
@@ -155,7 +125,7 @@ class QuerySetRule(BaseModel):
         ('istartswith', 'ends with (case insensitive)'),
         ('iendswith', 'ends with (case insensitive)'),
     )
-    drip = models.ForeignKey(Drip, related_name='queryset_rules')
+    drip = models.ForeignKey(Drip, related_name='drip_rules')
     method_type = models.CharField(max_length=12, default='filter', choices=METHOD_TYPES)
     field_name = models.CharField(max_length=128, verbose_name='Field name of User')
     lookup_type = models.CharField(max_length=12, default='exact', choices=LOOKUP_TYPES)
@@ -253,3 +223,33 @@ class QuerySetRule(BaseModel):
 
         # catch as default
         return qs.filter(**kwargs)
+
+
+class SentDrip(BaseModel):
+    STATE_QUEUED = 'queued'
+    STATE_SENT = 'sent'
+    STATES = (
+        (STATE_QUEUED, 'Queued'),
+        (STATE_SENT, 'Sent'),
+    )
+    drip = models.ForeignKey('drip_marketing.Drip', related_name='sent_drips')
+    user = models.ForeignKey(get_user_model(), related_name='sent_drips')
+    from_email = models.EmailField()
+    sender_name = models.CharField(max_length=100)
+    subject = models.TextField()
+    text_body = models.TextField()
+    html_body = models.TextField()
+    state = models.CharField(max_length=20, choices=STATES, default='queued')
+
+    def __str__(self):
+        return '{} - {}'.format(self.drip.name, self.user.email)
+
+    def send(self):
+        message = EmailMultiAlternatives(
+            subject=self.subject,
+            from_email=self.from_email,
+            to=[self.user.email],
+            body=self.text_body
+        )
+        message.attach_alternative(self.html_body, 'text/html')
+        return message.send(fail_silently=False)

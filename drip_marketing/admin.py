@@ -8,11 +8,11 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
-from drip_marketing.models import Drip, SentDrip, QuerySetRule
+from drip_marketing.models import Drip, DripRule, SentDrip
 
 
-class QuerySetRuleInline(admin.TabularInline):
-    model = QuerySetRule
+class DripRuleInline(admin.TabularInline):
+    model = DripRule
     extra = 1
 
 
@@ -27,7 +27,7 @@ class DripAdmin(admin.ModelAdmin):
         'active',
     ]
     inlines = [
-        QuerySetRuleInline,
+        DripRuleInline,
     ]
     actions = [
         'send_drips'
