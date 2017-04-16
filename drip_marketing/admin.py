@@ -30,7 +30,7 @@ class DripAdmin(admin.ModelAdmin):
         DripRuleInline,
     ]
     actions = [
-        'send_drips'
+        'run_drips'
     ]
 
     class Media:
@@ -68,10 +68,10 @@ class DripAdmin(admin.ModelAdmin):
             request, object_id, extra_context=self.build_extra_context(extra_context)
         )
 
-    def send_drips(self, request, queryset):
+    def run_drips(self, request, queryset):
         for drip in queryset:
             drip.run()
-    send_drips.short_description = 'Send drips'
+    run_drips.short_description = 'Run drips'
 
     def get_urls(self):
         urls = super(DripAdmin, self).get_urls()
@@ -132,10 +132,23 @@ class SentDripAdmin(admin.ModelAdmin):
         'from_email',
         'sender_name',
         'text_body',
-        'created_at'
+        'created_at',
+    ]
+    readonly_fields = [
+        'subject',
+        'text_body',
+        'html_body'
     ]
     ordering = ['-created_at']
     list_filter = [
         'state',
         'created_at'
     ]
+    actions = [
+        'send_queued_drips'
+    ]
+
+    def send_queued_drips(self, request, queryset):
+        for drip in queryset.filter(state=SentDrip.STATE_QUEUED):
+            drip.send()
+    send_queued_drips.short_description = 'Send queued drips'
