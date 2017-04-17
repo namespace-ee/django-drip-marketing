@@ -237,7 +237,7 @@ class SentDrip(BaseModel):
         (STATE_SENT, 'Sent'),
     )
     drip = models.ForeignKey('drip_marketing.Drip', related_name='sent_drips')
-    user = models.ForeignKey(get_user_model(), related_name='sent_drips')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_drips')
     from_email = models.EmailField()
     sender_name = models.CharField(max_length=100)
     subject = models.TextField()

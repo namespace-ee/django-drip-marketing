@@ -56,7 +56,11 @@ setup(
         'drip_marketing',
     ],
     include_package_data=True,
-    install_requires=["django-model-utils>=2.0",],
+    install_requires=[
+        'django>=1.8',
+        'premailer>=3.0.1',
+        'dateparser>=0.6.0',
+    ],
     license="BSD",
     zip_safe=False,
     keywords='django-drip-marketing',
