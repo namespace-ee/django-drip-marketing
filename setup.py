@@ -46,7 +46,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='django-drip-marketing',
-    version=version,
+    version='0.1.0',
     description="""Drip marketing for Django""",
     long_description=readme + '\n\n' + history,
     author='Madis Väin',
