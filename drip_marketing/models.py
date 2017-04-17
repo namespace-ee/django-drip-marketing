@@ -255,7 +255,9 @@ class SentDrip(BaseModel):
             to=[self.user.email],
             body=self.text_body
         )
-        message.attach_alternative(self.html_body, 'text/html')
+        if html_body:
+            message.attach_alternative(self.html_body, 'text/html')
+
         result = message.send(fail_silently=False)
         if result:
             self.state = self.STATE_SENT

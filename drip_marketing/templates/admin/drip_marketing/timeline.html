@@ -19,7 +19,7 @@
           
           {% for drip in drips %}
             <tr>
-              <td>{{ user.email|default:user.id }}</td>
+              <td>{{ drip.user.email|default:user.id }}</td>
               <td>
                 <a href="{% url 'admin:drip_email' drip.id user.id %}">
                   {% trans 'View email' %}
